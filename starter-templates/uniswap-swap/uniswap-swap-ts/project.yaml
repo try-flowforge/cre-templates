@@ -1,0 +1,19 @@
+# ==========================================================================
+# CRE PROJECT SETTINGS FILE
+# ==========================================================================
+# Uniswap swap starter-template (TypeScript).
+# Config shape aligned with agentic SwapNodeConfig / SwapInputConfig for future invocation from the app.
+
+# ==========================================================================
+staging-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-arbitrum-1
+      url: https://arb-sepolia.g.alchemy.com/v2/your_api_key
+
+# ==========================================================================
+production-settings:
+  rpcs:
+    - chain-name: arbitrum
+      url: https://arb1.arbitrum.io/rpc
+    - chain-name: ethereum-testnet-sepolia-arbitrum-1
+      url: https://arb-sepolia.g.alchemy.com/v2/your_api_key

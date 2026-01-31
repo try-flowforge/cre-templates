@@ -1,0 +1,28 @@
+{
+  "schedule": "0 */10 * * * *",
+  "chain": "ARBITRUM",
+  "chainSelectorName": "ethereum-mainnet-arbitrum-1",
+  "provider": "UNISWAP",
+  "swapReceiverAddress": "",
+  "routerAddress": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+  "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+  "gasLimit": "300000",
+  "inputConfig": {
+    "sourceToken": {
+      "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "destinationToken": {
+      "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "amount": "1000000000000000000",
+    "swapType": "EXACT_INPUT",
+    "walletAddress": "0x0000000000000000000000000000000000000000",
+    "slippageTolerance": 0.5,
+    "deadline": 0
+  },
+  "simulateFirst": true
+}

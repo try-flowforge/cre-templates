@@ -47,6 +47,9 @@ They are more comprehensive than **building-blocks**, and can be adapted into yo
 3. **Multi-Chain Token Manager** — [`./multi-chain-token-manager`](./multi-chain-token-manager)  
    Orchestrate token operations and state across multiple chains, showing RPC configuration, bindings, and cross-chain patterns.
 
+4. **Uniswap Swap** — [`./uniswap-swap`](./uniswap-swap)  
+   Config-driven Uniswap V3 token swap via CRE report + SwapReceiver contract. Config shape aligned with agentic SwapNodeConfig for app invocation.
+
 > Each subdirectory includes its own README with template-specific steps and example logs.
 
 ## License

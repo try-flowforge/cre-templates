@@ -1,0 +1,29 @@
+{
+  "schedule": "0 */10 * * * *",
+  "chain": "ARBITRUM_SEPOLIA",
+  "chainSelectorName": "ethereum-testnet-sepolia-arbitrum-1",
+  "provider": "UNISWAP",
+  "swapReceiverAddress": "0x9A48d70a5DD7DcE58A297bb0acFfEB14D7C77085",
+  "routerAddress": "0x101F443B4d1b059569D643917553c771E1b9663E",
+  "quoterAddress": "0x2779a0CC1c3e0E44D2542EC3e79e3864Ae93Ef0B",
+  "gasLimit": "550000",
+  "inputConfig": {
+    "sourceToken": {
+      "address": "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "destinationToken": {
+      "address": "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "amount": "10000000000000000",
+    "swapType": "EXACT_INPUT",
+    "walletAddress": "0xc073A5E091DC60021058346b10cD5A9b3F0619fE",
+    "slippageTolerance": 0.5,
+    "deadline": 0,
+    "amountOutMinimum": "0"
+  },
+  "simulateFirst": true
+}
