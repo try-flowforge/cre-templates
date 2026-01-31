@@ -1,0 +1,23 @@
+{
+  "schedule": "0 */10 * * * *",
+  "chain": "ARBITRUM",
+  "chainSelectorName": "ethereum-mainnet-arbitrum-1",
+  "provider": "AAVE",
+  "aaveReceiverAddress": "",
+  "poolAddress": "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+  "gasLimit": "500000",
+  "inputConfig": {
+    "operation": "SUPPLY",
+    "asset": {
+      "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "amount": "1000000",
+    "walletAddress": "0x0000000000000000000000000000000000000000",
+    "interestRateMode": "VARIABLE",
+    "onBehalfOf": "",
+    "referralCode": 0
+  },
+  "simulateFirst": true
+}

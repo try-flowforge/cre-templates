@@ -22,3 +22,6 @@
 [submodule "starter-templates/uniswap-swap/contracts/lib/forge-std"]
 	path = starter-templates/uniswap-swap/contracts/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "starter-templates/aave-lending/contracts/lib/forge-std"]
+	path = starter-templates/aave-lending/contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

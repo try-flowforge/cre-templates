@@ -1,0 +1,23 @@
+{
+  "schedule": "0 */10 * * * *",
+  "chain": "ARBITRUM_SEPOLIA",
+  "chainSelectorName": "ethereum-testnet-sepolia-arbitrum-1",
+  "provider": "AAVE",
+  "aaveReceiverAddress": "0xEB8358Eed74F4f796Ead98B63324D22E05214914",
+  "poolAddress": "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff",
+  "gasLimit": "500000",
+  "inputConfig": {
+    "operation": "SUPPLY",
+    "asset": {
+      "address": "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "amount": "1000000",
+    "walletAddress": "0xc073A5E091DC60021058346b10cD5A9b3F0619fE",
+    "interestRateMode": "VARIABLE",
+    "onBehalfOf": "",
+    "referralCode": 0
+  },
+  "simulateFirst": true
+}

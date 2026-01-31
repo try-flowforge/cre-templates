@@ -8,7 +8,7 @@
 staging-settings:
   rpcs:
     - chain-name: ethereum-testnet-sepolia-arbitrum-1
-      url: https://arb-sepolia.g.alchemy.com/v2/your_api_key
+      url: https://arb-sepolia.g.alchemy.com/v2/_HarkXk6peAjgeCiE1LadowO9I0q2ZVh
 
 # ==========================================================================
 production-settings:
@@ -16,4 +16,4 @@ production-settings:
     - chain-name: arbitrum
       url: https://arb1.arbitrum.io/rpc
     - chain-name: ethereum-testnet-sepolia-arbitrum-1
-      url: https://arb-sepolia.g.alchemy.com/v2/your_api_key
+      url: https://arb-sepolia.g.alchemy.com/v2/_HarkXk6peAjgeCiE1LadowO9I0q2ZVh

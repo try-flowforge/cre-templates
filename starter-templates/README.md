@@ -50,6 +50,9 @@ They are more comprehensive than **building-blocks**, and can be adapted into yo
 4. **Uniswap Swap** — [`./uniswap-swap`](./uniswap-swap)  
    Config-driven Uniswap V3 token swap via CRE report + SwapReceiver contract. Config shape aligned with agentic SwapNodeConfig for app invocation.
 
+5. **Aave Lending** — [`./aave-lending`](./aave-lending)  
+   Config-driven Aave V3 Pool operations (supply, withdraw, borrow, repay) via CRE report + AaveReceiver contract. Config shape aligned with agentic LendingNodeConfig for app invocation.
+
 > Each subdirectory includes its own README with template-specific steps and example logs.
 
 ## License
