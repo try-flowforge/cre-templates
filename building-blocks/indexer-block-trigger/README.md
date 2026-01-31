@@ -1,12 +1,12 @@
 # CRE Indexer Block Trigger Workflows
 
-Workflows for processing new blocks and transactions using block-triggered webhooks (from Alchemy Notify) and matching 
-against watched addresses. These workflows demonstrate the **block trigger pattern** where the workflow reacts to 
+Workflows for processing new blocks and transactions using block-triggered webhooks (from Alchemy Notify) and matching
+against watched addresses. These workflows demonstrate the **block trigger pattern** where the workflow reacts to
 incoming block data and extracts relevant transactions.
 
 ## Directory Structure
 
-```
+```bash
 building-blocks/indexer-block-trigger/
 ├── block-trigger-go/     (Go-based workflow)
 │   └── workflow/
@@ -28,13 +28,15 @@ building-blocks/indexer-block-trigger/
 ## Overview
 
 These workflows demonstrate how to:
-- React to block events via HTTP webhook triggers 
+
+- React to block events via HTTP webhook triggers
 (We use Alchemy Notify for this workflow)
 - Match transactions to a list of watched addresses
 - Process and return JSON-formatted block and transaction data
 - Implement the same logic in both Go and TypeScript
 
 Both workflows process incoming block data and extract:
+
 - Block number, hash, timestamp
 - All transactions in the block
 - Transactions where the `to` address matches a watched address
@@ -46,11 +48,13 @@ Both workflows process incoming block data and extract:
 **Language:** Go
 
 **Features:**
+
 - Uses `http.Trigger` from CRE Go SDK
 - Matches transactions to watched addresses from config
 - Returns formatted JSON summary of block and matched transactions
 
 **Running the workflow:**
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-go
 cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payload test-block.json --target staging-settings
@@ -61,11 +65,13 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 **Language:** TypeScript
 
 **Features:**
+
 - Uses HTTP trigger from CRE TypeScript SDK
 - Matches transactions to watched addresses from config
 - Returns formatted JSON summary of block and matched transactions
 
 **Running the workflow:**
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-ts/workflow
 bun install
@@ -77,11 +83,13 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 ### Prerequisites
 
 **For Go workflow:**
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Go
 
 **For TypeScript workflow:**
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Bun (or Node.js)
@@ -90,12 +98,14 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 ### Running the Workflows
 
 **Go Workflow:**
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-go
 cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payload test-block.json --target staging-settings
 ```
 
 **TypeScript Workflow:**
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-ts
 cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payload test-block.json --target staging-settings
@@ -138,6 +148,7 @@ To use Alchemy for block-triggered workflows, follow these steps:
 7. Click on `Create Webhook` to save the webhook and test the webhook URL.
 
 **Tips:**
+
 - Make sure your webhook URL is accessible and correctly configured to receive POST requests.
 - You may want to use a tool like [Webhook.site](https://webhook.site/) for initial testing.
 - Double-check the network and chain settings to match your workflow requirements.
@@ -150,7 +161,9 @@ To use Alchemy for block-triggered workflows, follow these steps:
 ## Example Use Cases
 
 ### 1. Monitoring High-Value Addresses
+
 Track transactions to specific addresses in real time:
+
 ```json
 {
   "watchedAddresses": ["0x...", "0x..."]
@@ -158,7 +171,9 @@ Track transactions to specific addresses in real time:
 ```
 
 ### 2. Contract Interaction Tracking
+
 Detect when contracts of interest receive transactions:
+
 ```json
 {
   "watchedAddresses": ["0xContract1", "0xContract2"]
@@ -166,6 +181,7 @@ Detect when contracts of interest receive transactions:
 ```
 
 ### 3. Block-Level Analytics
+
 Summarize block activity and matched transactions for analytics dashboards.
 
 ## Reference Documentation

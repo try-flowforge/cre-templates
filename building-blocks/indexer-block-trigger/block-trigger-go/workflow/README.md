@@ -3,22 +3,26 @@
 This workflow processes new blocks and transactions using block-triggered webhooks (e.g., Alchemy Notify) and matches against watched addresses. It demonstrates the **block trigger pattern** in Go.
 
 ## Features
+
 - Uses `http.Trigger` from CRE Go SDK
 - Matches transactions to watched addresses from config
 - Returns formatted JSON summary of block and matched transactions
 
 ## Setup and Prerequisites
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Go
 
 ## Running the Workflow
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-go
 cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payload test-block.json --target staging-settings
 ```
 
 ## Example Output
+
 ```json
 {
   "blockNumber": 12345678,
@@ -39,10 +43,12 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 ```
 
 ## Example Use Cases
+
 - Monitoring high-value addresses
 - Contract interaction tracking
 - Block-level analytics
 
 ## Reference Documentation
+
 - [CRE Documentation](https://docs.chain.link/cre)
 - [Alchemy Webhooks](https://www.alchemy.com/docs/reference/custom-webhook)

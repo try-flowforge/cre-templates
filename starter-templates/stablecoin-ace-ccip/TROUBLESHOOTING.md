@@ -9,12 +9,14 @@ This guide covers common issues and debugging steps for the CRE Stablecoin Demo.
 **Common with CRE workflows using public RPCs**
 
 If CRE workflows show "Timeout waiting for execution" error:
+
 - **Most transactions still succeed** on-chain before timeout
 - Look for `[Step Name] Success! TX: 0x...` lines before timeout message
 - Copy transaction hashes and verify on block explorer
 - **Public RPC latency varies** - free RPCs can be slow during peak times
 
 **What to do:**
+
 1. Check which transactions succeeded (look for TX hashes in output)
 2. Verify on Etherscan/Snowtrace that transactions confirmed
 3. **For reliable execution:** Use your own RPC endpoint (Alchemy, Infura, etc.)
@@ -28,17 +30,20 @@ If CRE workflows show "Timeout waiting for execution" error:
 **To avoid timeout issues and speed up deployment:**
 
 **Get free RPC from:**
+
 - [Alchemy](https://www.alchemy.com/) - Free tier available
 - [Infura](https://www.infura.io/) - Free tier available
 - [QuickNode](https://www.quicknode.com/) - Free trial
 
 **Update Step 1.2:**
+
 ```bash
 export SEPOLIA_RPC=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
 export FUJI_RPC=https://avalanche-fuji.infura.io/v3/YOUR_API_KEY
 ```
 
 **Benefits:**
+
 - ✅ Faster transaction confirmations
 - ✅ More reliable (no timeout issues)
 - ✅ Better for production use
@@ -46,6 +51,7 @@ export FUJI_RPC=https://avalanche-fuji.infura.io/v3/YOUR_API_KEY
 ---
 
 ## Deployment Fails
+
 - Check RPC URL is accessible
 - Verify wallet has testnet ETH
 - Ensure OpenZeppelin installed: `bun add @openzeppelin/contracts`
@@ -54,15 +60,18 @@ export FUJI_RPC=https://avalanche-fuji.infura.io/v3/YOUR_API_KEY
 ---
 
 ## "OnlyMinter" Error
+
 ```bash
 # Check role granted
 cast call $STABLECOIN "isMinter(address)(bool)" $CONSUMER --rpc-url $RPC
 ```
+
 The command should return `true`.
 
 ---
 
 ## CCIP Setup Fails
+
 - Verify all 4 addresses in payload are correct
 - Ensure pool was deployed successfully
 - Check wallet is token owner
@@ -70,6 +79,7 @@ The command should return `true`.
 ---
 
 ## CCIP Transfer Not Arriving
+
 - Wait full 10-20 minutes
 - Check CCIP Explorer link
 - Verify consumer has LINK balance
@@ -113,6 +123,7 @@ cast call $POLICY_ENGINE \
 ```
 
 **If this returns `[]`, policies are NOT attached! Re-run:**
+
 ```bash
 ETHERSCAN_API_KEY=dummy forge script script/ConfigureACEWithConstants.s.sol:ConfigureACEWithConstants \
   --rpc-url $SEPOLIA_RPC \
@@ -149,7 +160,8 @@ cast call $BLACKLIST_POLICY \
 **⚠️ CRITICAL INSIGHT:** CRE workflow will report `"reportDelivered": true` even when ACE blocks the transaction!
 
 **Why?**
-```
+
+```bash
 User → CRE Workflow → Forwarder Contract (TX succeeds ✅) 
                           ↓
                        Consumer.onReport() (can revert internally ❌)
@@ -158,6 +170,7 @@ User → CRE Workflow → Forwarder Contract (TX succeeds ✅)
 The Forwarder transaction succeeds even if the consumer's internal logic reverts!
 
 **What "reportDelivered" Means:**
+
 - ✅ Report was successfully delivered to the consumer contract
 - ❌ Does NOT mean the consumer's logic succeeded
 - ⚠️  Consumer can internally revert (ACE blocking, insufficient balance, etc.)
@@ -165,6 +178,7 @@ The Forwarder transaction succeeds even if the consumer's internal logic reverts
 **How to Verify ACE Actually Blocked:**
 
 Check for Transfer events, NOT just TX status:
+
 ```bash
 TX_HASH=<your_mint_transaction_hash>
 
@@ -179,6 +193,7 @@ cast logs --from-block <block> --to-block <block> \
 ```
 
 Or check balance:
+
 ```bash
 # Before workflow
 BAL_BEFORE=$(cast call $STABLECOIN_SEPOLIA "balanceOf(address)(uint256)" <beneficiary> --rpc-url $SEPOLIA_RPC)
@@ -192,6 +207,7 @@ BAL_AFTER=$(cast call $STABLECOIN_SEPOLIA "balanceOf(address)(uint256)" <benefic
 ### 6. Direct Test (Bypass CRE)
 
 Test ACE directly to isolate the issue:
+
 ```bash
 # Create test report
 REPORT=$(cast abi-encode "f(uint8,address,uint256,bytes32)" 1 <blacklisted_addr> 50000000000000000000 0x5445535400000000000000000000000000000000000000000000000000000000)
@@ -225,4 +241,3 @@ cast call $STABLECOIN_SEPOLIA \
 - Check the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for full deployment steps
 - Review the [README.md](./README.md) for architecture overview
 - Visit [Chainlink Documentation](https://docs.chain.link)
-

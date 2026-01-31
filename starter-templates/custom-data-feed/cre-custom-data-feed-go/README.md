@@ -41,16 +41,18 @@ This template is an educational example to demonstrate how to interact with Chai
 This template provides an end-to-end starting point for bringing your own **custom data feed** on-chain with the **Chainlink Runtime Environment (CRE)**. It showcases local simulation and the core CRE workflow patterns.
 
 **Components:**
-- **Contracts** (Solidity) under `projectRoot/contracts/evm/src`  
+
+* **Contracts** (Solidity) under `projectRoot/contracts/evm/src`  
   Example demo contracts used by the workflow:
-  - `ReserveManager`
-  - `SimpleERC20`
-  - `BalanceReader`
-  - `MessageEmitter`
-- **CRE Workflow** (Go) that fetches your off-chain data and optionally performs chain writes based on configurable triggers (cron or EVM log).
+  * `ReserveManager`
+  * `SimpleERC20`
+  * `BalanceReader`
+  * `MessageEmitter`
+* **CRE Workflow** (Go) that fetches your off-chain data and optionally performs chain writes based on configurable triggers (cron or EVM log).
 
 **Key Technologies**
-- **CRE (Chainlink Runtime Environment)** – orchestrates workflows with DON consensus.
+
+* **CRE (Chainlink Runtime Environment)** – orchestrates workflows with DON consensus.
 
 ---
 
@@ -157,7 +159,7 @@ cre workflow simulate my-workflow
 
 You’ll see trigger options, e.g.:
 
-```
+```bash
 🚀 Workflow simulation ready. Please select a trigger:
 1. cron-trigger@1.0.0 Trigger
 2. evm:ChainSelector:16015286601757825753@1.0.0 LogTrigger
@@ -166,14 +168,14 @@ You’ll see trigger options, e.g.:
 * **Cron Trigger**: choose `1` → the workflow executes immediately on the schedule.
 * **Log Trigger**: choose `2` → provide the example inputs:
 
-```
+```bash
 Transaction Hash: 0x420721d7d00130a03c5b525b2dbfd42550906ddb3075e8377f9bb5d1a5992f8e
 Log Event Index: 0
 ```
 
 Example output:
 
-```
+```bash
 🔗 EVM Trigger Configuration:
 Please provide the transaction hash and event index for the EVM log event.
 Enter transaction hash (0x...): 0x420721...

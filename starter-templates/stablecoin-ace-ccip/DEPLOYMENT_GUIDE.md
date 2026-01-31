@@ -7,11 +7,13 @@ This guide is for a developer to deploy your own contracts and build the app fro
 ## Prerequisites
 
 ### Required Tools
+
 - Foundry (`forge --version`)
 - CRE CLI (`cre --version`)
 - Bun v1.2.21+ (`bun --version`)
 
 ### Required Funds
+
 - Sepolia testnet ETH ([faucet](https://faucets.chain.link))
 - Fuji testnet AVAX ([faucet](https://faucets.chain.link))
 - LINK on both chains (from faucet)
@@ -23,6 +25,7 @@ This guide is for a developer to deploy your own contracts and build the app fro
 ### Step 1.1: Initial Setup
 
 Clone the repository:
+
 ```bash
 git clone https://github.com/smartcontractkit/cre-demo-dapps
 cd cre-demo-dapps
@@ -30,12 +33,14 @@ git checkout bank-stablecoin
 ```
 
 Copy configuration templates:
+
 ```bash
 cp .env.example .env
 cp secrets.yaml.example secrets.yaml
 ```
 
 Edit .env with your private key:
+
 ```bash
 vim .env  # or nano .env
 ```
@@ -78,6 +83,7 @@ export STABLECOIN_SEPOLIA=<paste_deployed_address_here>
 ### Step 1.5: Deploy MintingConsumer on Sepolia
 
 **💡 Constructor arguments explained:**
+
 - `$STABLECOIN_SEPOLIA` = Your deployed stablecoin address
 - `0x0000000000000000000000000000000000000000` = Expected author (use address(0) for testing)
 - `0x64756d6d790000000000` = Expected workflow name (we're using bytes10("dummy") for testing)
@@ -115,6 +121,7 @@ cast send $STABLECOIN_SEPOLIA \
 ### Step 1.7: Update Workflow Configuration
 
 Edit `bank-stablecoin-workflow/config.json`:
+
 ```json
 {
   "evms": [
@@ -160,12 +167,12 @@ cre workflow simulate bank-stablecoin-workflow \
 
 **Expected:** 250 creUSD burned (check transaction hash in output).
 
-
 ---
 
 ## Phase 2: Cross-Chain CCIP Integration
 
 **⚠️ Important:** Phase 2 involves ~15+ blockchain transactions across 2 chains. With public RPCs, expect:
+
 - **Total time:** 30-60 minutes
 - **Possible timeouts:** Steps 2.7-2.8 may show timeout errors (transactions often still succeed)
 - **Recommendation:** Use your own RPC endpoint for faster/more reliable execution
@@ -232,6 +239,7 @@ cast send $STABLECOIN_FUJI \
 ### Step 2.5: Deploy & Configure CCIP Infrastructure (All-in-One Script)
 
 **💡 This single script does everything:**
+
 1. Deploys BurnMintTokenPool on Sepolia
 2. Deploys BurnMintTokenPool on Fuji
 3. Grants mint/burn roles on both chains
@@ -239,6 +247,7 @@ cast send $STABLECOIN_FUJI \
 5. Configures bidirectional routes (Sepolia ↔ Fuji)
 
 **Run the all-in-one script:**
+
 ```bash
 # Pass your deployed stablecoin addresses directly
 STABLECOIN_SEPOLIA=<YOUR_SEPOLIA_STABLECOIN> \
@@ -250,7 +259,8 @@ forge script script/DeployCCIP.s.sol:DeployCCIP \
 ```
 
 **💡 Expected output:**
-```
+
+```bash
 ============================================================
 DEPLOYING CCIP INFRASTRUCTURE (SEPOLIA <> FUJI)
 ============================================================
@@ -289,12 +299,14 @@ Add to .env:
 ```
 
 **💡 Copy the pool addresses from output:**
+
 ```bash
 export POOL_SEPOLIA=<sepolia_pool_from_output>
 export POOL_FUJI=<fuji_pool_from_output>
 ```
 
 **Verify routes:**
+
 ```bash
 # Check Sepolia pool knows about Fuji
 cast call $POOL_SEPOLIA "isSupportedChain(uint64)(bool)" 14767482510784806043 --rpc-url $SEPOLIA_RPC
@@ -308,12 +320,14 @@ cast call $POOL_FUJI "isSupportedChain(uint64)(bool)" 16015286601757825753 --rpc
 ### Step 2.6: Deploy CCIPTransferConsumer
 
 **Set LINK token addresses:**
+
 ```bash
 export LINK_SEPOLIA=0x779877A7B0D9E8603169DdbD7836e478b4624789
 export LINK_FUJI=0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
 ```
 
 **💡 Constructor arguments explained:**
+
 - `$STABLECOIN` = Your stablecoin address
 - `$ROUTER` = CCIP Router address
 - `$LINK` = LINK token address (for fees)
@@ -321,6 +335,7 @@ export LINK_FUJI=0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
 - `0x6475...` = Expected workflow name (bytes10("dummy") for testing)
 
 **Deploy on Sepolia:**
+
 ```bash
 forge create contracts/CCIPTransferConsumer.sol:CCIPTransferConsumer \
   --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast \
@@ -332,6 +347,7 @@ export CCIP_CONSUMER_SEPOLIA=<paste_deployed_address_here>
 ```
 
 **Deploy on Fuji:**
+
 ```bash
 forge create contracts/CCIPTransferConsumer.sol:CCIPTransferConsumer \
   --rpc-url $FUJI_RPC --private-key $PRIVATE_KEY --broadcast \
@@ -345,6 +361,7 @@ export CCIP_CONSUMER_FUJI=<paste_deployed_address_here>
 ### Step 2.7: Fund Consumers with LINK
 
 **Sepolia:**
+
 ```bash
 cast send $LINK_SEPOLIA \
   "transfer(address,uint256)" \
@@ -355,6 +372,7 @@ cast send $LINK_SEPOLIA \
 ```
 
 **Fuji:**
+
 ```bash
 cast send $LINK_FUJI \
   "transfer(address,uint256)" \
@@ -367,6 +385,7 @@ cast send $LINK_FUJI \
 ### Step 2.8: Update CCIP Workflow Configuration
 
 Edit `ccip-transfer-workflow/config.json`:
+
 ```json
 {
   "chains": {
@@ -392,6 +411,7 @@ Edit `ccip-transfer-workflow/config.json`:
 The CCIPTransferConsumer needs permission to spend your tokens before initiating cross-chain transfers. Without this approval, transfers will fail silently.
 
 **On Sepolia:**
+
 ```bash
 cast send $STABLECOIN_SEPOLIA \
   "approve(address,uint256)" \
@@ -404,6 +424,7 @@ cast send $STABLECOIN_SEPOLIA \
 **Expected output:** Transaction hash with `status: 1 (success)`
 
 **On Fuji:**
+
 ```bash
 cast send $STABLECOIN_FUJI \
   "approve(address,uint256)" \
@@ -416,6 +437,7 @@ cast send $STABLECOIN_FUJI \
 **💡 Why this matters:** The consumer calls `transferFrom(sender, consumer, amount)` which requires prior approval from the sender.
 
 **💡 Important:** The `sender.account` in your payload file must have:
+
 - Sufficient token balance
 - Approval granted to the consumer (Step 2.12)
 - Match the private key you're using
@@ -426,10 +448,12 @@ In this demo, the deployer wallet (your private key) is both minting recipient a
 
 **💡 Prerequisites Check:**
 Before testing the transfer, ensure your sender account has tokens. If you used the beneficiary address in Phase 1, you can either:
+
 - Option A: Use the beneficiary address (has 750 creUSD from Phase 1)
 - Option B: Mint tokens to your deployer address (recommended for testing)
 
 **If using deployer as sender (recommended):**
+
 ```bash
 # Edit the deployer payload with your address
 vim bank-stablecoin-workflow/http_trigger_payload_deployer.json
@@ -447,6 +471,7 @@ cre workflow simulate bank-stablecoin-workflow \
 ```
 
 **Install dependencies:**
+
 ```bash
 cd ccip-transfer-workflow
 bun install
@@ -454,6 +479,7 @@ cd ..
 ```
 
 **Transfer Sepolia → Fuji:**
+
 ```bash
 cre workflow simulate ccip-transfer-workflow \
   --target local-simulation \
@@ -464,11 +490,13 @@ cre workflow simulate ccip-transfer-workflow \
 ```
 
 **Monitor transfer:**
+
 - Copy messageId from logs
 - Visit: `https://ccip.chain.link/msg/<messageId>`
 - Wait 10-20 minutes for delivery
 
 **Verify on Fuji:**
+
 ```bash
 # After 10-20 minutes, check beneficiary's balance
 # (Use the beneficiary address from your http_trigger_payload.json)
@@ -480,12 +508,12 @@ cast call $STABLECOIN_FUJI \
 
 Should show 100 creUSD received on the beneficiary address.
 
-
 ---
 
 ## Phase 3: Advanced Multi-Service Integration (PoR + ACE + CCIP)
 
 **🎯 Overview:** Phase 3 demonstrates an advanced stablecoin demo combining:
+
 - **Proof of Reserve (PoR)** - Validates sufficient off-chain reserves before minting
 - **Automated Compliance Engine (ACE)** - Enforces address blacklist and volume limit policies
 - **CCIP** - Cross-chain transfers with compliance checks (optional)
@@ -507,6 +535,7 @@ cd bank-stablecoin-por-ace-ccip-workflow && bun install && cd ..
 **Proof of Reserve (PoR)** validates that sufficient off-chain reserves exist before minting new stablecoins. This prevents over-minting and ensures 1:1 backing.
 
 **How it works in this demo:**
+
 - CRE workflow fetches reserve data via HTTP capability
 - Compares requested mint amount against available reserves
 - If insufficient reserves → workflow fails before any on-chain transaction
@@ -517,12 +546,14 @@ cd bank-stablecoin-por-ace-ccip-workflow && bun install && cd ..
 **Automated Compliance Engine (ACE)** enforces on-chain compliance policies before transactions execute. It acts as a policy layer that can block unauthorized operations.
 
 **How it works:**
+
 - `PolicyEngine` orchestrates policy checks
 - `Extractors` parse transaction data to extract parameters (e.g., beneficiary address, amount)
 - `Policies` evaluate parameters (e.g., is address blacklisted? is amount within limits?)
 - If any policy rejects → transaction reverts before execution
 
 **Policies in this demo:**
+
 - `AddressBlacklistPolicy` - Blocks mints/transfers to blacklisted addresses
 - `VolumePolicy` - Enforces min/max transfer amounts for CCIP (100-10,000 creUSD)
 
@@ -531,40 +562,47 @@ cd bank-stablecoin-por-ace-ccip-workflow && bun install && cd ..
 **💡 Note:** ACE dependencies were already installed in Phase 2, Step 2.1
 
 **Deploy PolicyEngine + BlacklistPolicy:**
+
 ```bash
 ETHERSCAN_API_KEY=dummy forge script script/DeployACESystem.s.sol:DeployACESystem \
   --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast
 ```
 
 **💡 Save the deployed addresses:**
+
 ```bash
 export POLICY_ENGINE=<PolicyEngine_proxy_address>
 export BLACKLIST_POLICY=<BlacklistPolicy_proxy_address>
 ```
 
 **Deploy UnifiedExtractor:**
+
 ```bash
 ETHERSCAN_API_KEY=dummy forge script script/DeployUnifiedExtractor.s.sol:DeployUnifiedExtractor \
   --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast
 ```
 
 **💡 Save the deployed address:**
+
 ```bash
 export UNIFIED_EXTRACTOR=<UnifiedExtractor_address>
 ```
 
 **Deploy VolumePolicy:**
+
 ```bash
 forge script script/DeployVolumePolicy.s.sol:DeployVolumePolicy \
   --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast
 ```
 
 **💡 Save the deployed address:**
+
 ```bash
 export VOLUME_POLICY=<VolumePolicy_proxy_address>
 ```
 
 **💡 What we deployed:**
+
 - `PolicyEngine` - Orchestrates all policy checks
 - `BlacklistPolicy` - Blocks blacklisted addresses
 - `UnifiedExtractor` - Parses both mint and CCIP reports
@@ -575,12 +613,14 @@ export VOLUME_POLICY=<VolumePolicy_proxy_address>
 **💡 Note:** Consumers are initialized with the PolicyEngine from Step 3.4. We won't attach policies until Step 3.9 - this allows us to test PoR first.
 
 **Set required environment variables:**
+
 ```bash
 export SEPOLIA_ROUTER=0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59
 export LINK_SEPOLIA=0x779877A7B0D9E8603169DdbD7836e478b4624789
 ```
 
 **Deploy consumers:**
+
 ```bash
 # Pass PolicyEngine address directly to ensure consumers use the correct one
 POLICY_ENGINE=<YOUR_POLICY_ENGINE_FROM_STEP_3.4> \
@@ -591,13 +631,15 @@ forge script script/DeployACEConsumers.s.sol:DeployACEConsumers \
 ```
 
 **💡 Save the deployed addresses:**
+
 ```bash
 export MINTING_CONSUMER_ACE=<MintingConsumerWithACE_proxy_address>
 export CCIP_CONSUMER_ACE=<CCIPTransferConsumerWithACE_proxy_address>
 ```
 
 **Example output:**
-```
+
+```bash
 MintingConsumerWithACE: 0x24c0f5C1A286Fbd27A730303a1a845b4cf85F0Cc
 CCIPTransferConsumerWithACE: 0xFa031de805af3a9A72D37f57a01634ADF4a61cD5
 ```
@@ -643,7 +685,8 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 **Expected output:**
-```
+
+```bash
 [PoR Validation] Fetching reserve data...
 Using mock PoR data for demo
 Reserve Data: 500000 USD
@@ -674,6 +717,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 **CRE should return with execution error** - workflow fails with `POR_INSUFFICIENT_RESERVES`. No transaction sent.
 
 **Restore payload to default:**
+
 ```bash
 vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 # Change back: "amount": "1000"
@@ -688,6 +732,7 @@ vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 **⚠️ CRITICAL:** ACE uses `keccak256("parameterName")` convention, NOT `bytes32("parameterName")`!
 
 **Run configuration script:**
+
 ```bash
 # Pass all ACE addresses directly to ensure correct configuration
 POLICY_ENGINE=<YOUR_POLICY_ENGINE> \
@@ -704,11 +749,13 @@ forge script script/ConfigureACEWithConstants.s.sol:ConfigureACEWithConstants \
 ```
 
 The script will:
+
 1. Verify `UnifiedExtractor` is attached to `onReport` selector
 2. Attach `BlacklistPolicy` to MintingConsumer (checks `beneficiary` parameter)
 3. Attach `VolumePolicy` to CCIPConsumer (checks `amount` parameter)
 
 **Fund CCIP Consumer with LINK:**
+
 ```bash
 cast send $LINK_SEPOLIA \
   "transfer(address,uint256)" \
@@ -720,6 +767,7 @@ cast send $LINK_SEPOLIA \
 ### Step 3.10: Test ACE - Mint Blacklist Blocking
 
 **Blacklist a test address:**
+
 ```bash
 cast send $BLACKLIST_POLICY \
   "addToBlacklist(address)" \
@@ -735,6 +783,7 @@ cast call $BLACKLIST_POLICY \
 ```
 
 **Check balance before:**
+
 ```bash
 cast call $STABLECOIN_SEPOLIA \
   "balanceOf(address)(uint256)" \
@@ -744,6 +793,7 @@ cast call $STABLECOIN_SEPOLIA \
 ```
 
 **Edit payload to use blacklisted address:**
+
 ```bash
 vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 # Change: "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
@@ -751,6 +801,7 @@ vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 ```
 
 **Run workflow (ACE should block):**
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -761,6 +812,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 **Verify ACE blocked:**
+
 ```bash
 # Check balance (should still be 0)
 cast call $STABLECOIN_SEPOLIA \
@@ -771,6 +823,7 @@ cast call $STABLECOIN_SEPOLIA \
 ```
 
 **Restore payload:**
+
 ```bash
 vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 # Change back to: "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
@@ -781,6 +834,7 @@ vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 **Test Scenario 1: Amount Within Range (500 creUSD) - Should ALLOW**
 
 Run test:
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -791,6 +845,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 Verify CCIP transfer succeeded:
+
 ```bash
 # Check for burn event (Transfer to zero address)
 cast receipt <mintTransaction_hash> --rpc-url $SEPOLIA_RPC --json | \
@@ -804,6 +859,7 @@ jq --arg addr "$STABLECOIN_SEPOLIA" \
 ```
 
 **Check CCIP Explorer:**
+
 ```bash
 # Copy ccipTransaction from workflow output and paste into CCIP Explorer:
 # https://ccip.chain.link/msg/<ccipTransaction_hash>
@@ -812,6 +868,7 @@ jq --arg addr "$STABLECOIN_SEPOLIA" \
 **Test Scenario 2: Amount Below Minimum (50 creUSD) - Should BLOCK**
 
 Run test:
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -822,6 +879,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 Verify blocking:
+
 ```bash
 # Check for burn event (Transfer to zero address)
 cast receipt <mintTransaction_hash> --rpc-url $SEPOLIA_RPC --json | \
@@ -838,6 +896,7 @@ jq --arg addr "$STABLECOIN_SEPOLIA" \
 **Test Scenario 3: Amount Above Maximum (15,000 creUSD) - Should BLOCK**
 
 Run test:
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -848,6 +907,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 Verify blocking:
+
 ```bash
 # Check for burn event (Transfer to zero address)
 cast receipt <mintTransaction_hash> --rpc-url $SEPOLIA_RPC --json | \
@@ -868,6 +928,7 @@ jq --arg addr "$STABLECOIN_SEPOLIA" \
 After deployment, you can manage ACE policies using these commands:
 
 **Add address to blacklist:**
+
 ```bash
 cast send $BLACKLIST_POLICY \
   "addToBlacklist(address)" \
@@ -876,6 +937,7 @@ cast send $BLACKLIST_POLICY \
 ```
 
 **Remove address from blacklist:**
+
 ```bash
 cast send $BLACKLIST_POLICY \
   "removeFromBlacklist(address)" \
@@ -884,6 +946,7 @@ cast send $BLACKLIST_POLICY \
 ```
 
 **Check if address is blacklisted:**
+
 ```bash
 cast call $BLACKLIST_POLICY \
   "isBlacklisted(address)(bool)" \
@@ -892,6 +955,7 @@ cast call $BLACKLIST_POLICY \
 ```
 
 **Transfer policy ownership:**
+
 ```bash
 # PolicyEngine, BlacklistPolicy, VolumePolicy, and Consumers are all Ownable
 cast send $BLACKLIST_POLICY \
@@ -905,4 +969,3 @@ cast send $BLACKLIST_POLICY \
 ## Troubleshooting
 
 For common issues and debugging steps, see [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md).
-

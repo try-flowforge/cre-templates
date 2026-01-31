@@ -3,6 +3,7 @@
 Deploy a stablecoin with mint and redeem functionality using Chainlink Runtime Environment (CRE).
 
 **What you'll build:**
+
 - ERC20 stablecoin contract
 - CRE consumer for mint/redeem operations
 - HTTP-triggered workflow for bank integration
@@ -14,11 +15,13 @@ Deploy a stablecoin with mint and redeem functionality using Chainlink Runtime E
 ## Prerequisites
 
 ### Required Tools
+
 - Foundry (`forge --version`)
 - CRE CLI (`cre --version`)
 - Bun v1.2.21+ (`bun --version`)
 
 ### Required Funds
+
 - Sepolia testnet ETH ([faucet](https://faucets.chain.link))
 
 ---
@@ -26,6 +29,7 @@ Deploy a stablecoin with mint and redeem functionality using Chainlink Runtime E
 ## Step 1.1: Initial Setup
 
 Clone the repository:
+
 ```bash
 git clone https://github.com/smartcontractkit/cre-demo-dapps
 cd cre-demo-dapps
@@ -33,12 +37,14 @@ git checkout bank-stablecoin
 ```
 
 Copy configuration templates:
+
 ```bash
 cp .env.example .env
 cp secrets.yaml.example secrets.yaml
 ```
 
 Edit .env with your private key:
+
 ```bash
 vim .env  # or nano .env
 ```
@@ -81,6 +87,7 @@ export STABLECOIN_SEPOLIA=<paste_deployed_address_here>
 ## Step 1.5: Deploy MintingConsumer on Sepolia
 
 **Constructor arguments explained:**
+
 - `$STABLECOIN_SEPOLIA` = Your deployed stablecoin address
 - `0x0000000000000000000000000000000000000000` = Expected author (use address(0) for testing)
 - `0x64756d6d790000000000` = Expected workflow name (we're using bytes10("dummy") for testing)
@@ -118,6 +125,7 @@ cast send $STABLECOIN_SEPOLIA \
 ## Step 1.7: Update Workflow Configuration
 
 Edit `bank-stablecoin-workflow/config.json`:
+
 ```json
 {
   "evms": [
@@ -170,4 +178,3 @@ cre workflow simulate bank-stablecoin-workflow \
 **Next:** [Phase 2: Add Cross-Chain CCIP Transfers](../ccip-transfer-workflow/README.md)
 
 **See also:** [Complete Deployment Guide](../DEPLOYMENT_GUIDE.md) | [Main README](../README.md)
-

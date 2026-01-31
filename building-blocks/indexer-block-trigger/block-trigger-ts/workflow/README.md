@@ -3,17 +3,20 @@
 This workflow processes new blocks and transactions using block-triggered webhooks (e.g., Alchemy Notify) and matches against watched addresses. It demonstrates the **block trigger pattern** in TypeScript.
 
 ## Features
+
 - Uses HTTP trigger from CRE TypeScript SDK
 - Matches transactions to watched addresses from config
 - Returns formatted JSON summary of block and matched transactions
 
 ## Setup and Prerequisites
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Bun (or Node.js)
 4. Run `bun install` in the workflow directory
 
 ## Running the Workflow
+
 ```bash
 cd building-blocks/indexer-block-trigger/block-trigger-ts/workflow
 bun install
@@ -21,6 +24,7 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 ```
 
 ## Example Output
+
 ```json
 {
   "blockNumber": 12345678,
@@ -41,10 +45,12 @@ cre workflow simulate workflow --non-interactive --trigger-index 0 --http-payloa
 ```
 
 ## Example Use Cases
+
 - Monitoring high-value addresses
 - Contract interaction tracking
 - Block-level analytics
 
 ## Reference Documentation
+
 - [CRE Documentation](https://docs.chain.link/cre)
 - [Alchemy Webhooks](https://www.alchemy.com/docs/reference/custom-webhook)

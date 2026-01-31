@@ -27,13 +27,12 @@ This tutorial represents an educational example to use a Chainlink system, produ
 * [Repository Structure](#repository-structure)
 * [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
-  - [Option 1: Test with Pre-Deployed Contracts (Fastest)](#option-1-test-with-pre-deployed-contracts-fastest)
-  - [Option 2: Full Deployment from Scratch](#option-2-full-deployment-from-scratch)
+  * [Option 1: Test with Pre-Deployed Contracts (Fastest)](#option-1-test-with-pre-deployed-contracts-fastest)
+  * [Option 2: Deploy Your Own](#option-2-deploy-your-own)
 * [CRE + PoR + ACE + CCIP Capabilities](#cre--por--ace--ccip-capabilities)
 * [Observability Tips](#observability-tips)
 * [Troubleshooting](#troubleshooting)
 * [Security Considerations](#security-considerations)
-* [Project Documentation](#project-documentation)
 * [License](#license)
 
 ---
@@ -47,15 +46,17 @@ This repository demonstrates how financial institutions can build a **secure, co
 **Phase 2:** Cross-chain stablecoin transfers using CCIP. Users can transfer tokens between Ethereum Sepolia and Avalanche Fuji testnets with automatic token burning on the source chain and minting on the destination.
 
 **Phase 3:** Advanced multi-service integration (production requires additional audits and hardening) that combines:
+
 1. **Proof of Reserve (PoR)** - Validates sufficient off-chain reserves before minting (prevents over-collateralization issues)
 2. **Automated Compliance Engine (ACE)** - Enforces on-chain policies like address blacklisting for regulatory compliance
 3. **CCIP** - Secure cross-chain transfers with compliance checks at both mint and transfer stages
 
 **Key Technologies:**
-- **CRE (Chainlink Runtime Environment)** - Orchestrates multi-service workflows with DON consensus
-- **PoR (Proof of Reserve)** - External reserve validation
-- **ACE (Automated Compliance Engine)** - On-chain policy enforcement
-- **CCIP (Cross-Chain Interoperability Protocol)** - Secure token bridging
+
+* **CRE (Chainlink Runtime Environment)** - Orchestrates multi-service workflows with DON consensus
+* **PoR (Proof of Reserve)** - External reserve validation
+* **ACE (Automated Compliance Engine)** - On-chain policy enforcement
+* **CCIP (Cross-Chain Interoperability Protocol)** - Secure token bridging
 
 ---
 
@@ -145,29 +146,32 @@ sequenceDiagram
 ## Repository Structure
 
 ### 1. Workflows Directory
+
 Three progressive CRE workflows demonstrating increasing complexity:
 
-- **`bank-stablecoin-workflow/`** - Phase 1: Basic mint/redeem operations
-- **`ccip-transfer-workflow/`** - Phase 2: Cross-chain CCIP transfers
-- **`bank-stablecoin-por-ace-ccip-workflow/`** - Phase 3: PoR + ACE + CCIP integration
+* **`bank-stablecoin-workflow/`** - Phase 1: Basic mint/redeem operations
+* **`ccip-transfer-workflow/`** - Phase 2: Cross-chain CCIP transfers
+* **`bank-stablecoin-por-ace-ccip-workflow/`** - Phase 3: PoR + ACE + CCIP integration
 
 ### 2. Contracts Directory
+
 Smart contracts for stablecoin and ACE integration:
 
-- **`StablecoinERC20.sol`** - Core stablecoin with mint/burn roles
-- **`MintingConsumer.sol`** - Phase 1: Basic CRE consumer
-- **`CCIPTransferConsumer.sol`** - Phase 2: CCIP consumer
-- **`MintingConsumerWithACE.sol`** - Phase 3: ACE-protected mint consumer
-- **`CCIPTransferConsumerWithACE.sol`** - Phase 3: ACE-protected CCIP consumer
-- **`policies/AddressBlacklistPolicy.sol`** - ACE blacklist policy
-- **`extractors/UnifiedExtractor.sol`** - ACE parameter extractor for both mint and CCIP operations
+* **`StablecoinERC20.sol`** - Core stablecoin with mint/burn roles
+* **`MintingConsumer.sol`** - Phase 1: Basic CRE consumer
+* **`CCIPTransferConsumer.sol`** - Phase 2: CCIP consumer
+* **`MintingConsumerWithACE.sol`** - Phase 3: ACE-protected mint consumer
+* **`CCIPTransferConsumerWithACE.sol`** - Phase 3: ACE-protected CCIP consumer
+* **`policies/AddressBlacklistPolicy.sol`** - ACE blacklist policy
+* **`extractors/UnifiedExtractor.sol`** - ACE parameter extractor for both mint and CCIP operations
 
 ### 3. Scripts Directory
+
 Foundry deployment scripts for ACE infrastructure:
 
-- **`DeployACESystem.s.sol`** - Deploy PolicyEngine, policies, and extractors
-- **`DeployACEConsumers.s.sol`** - Deploy ACE-protected consumers
-- **`ConfigureACEWithConstants.s.sol`** - Configure ACE (attach policies and extractors)
+* **`DeployACESystem.s.sol`** - Deploy PolicyEngine, policies, and extractors
+* **`DeployACEConsumers.s.sol`** - Deploy ACE-protected consumers
+* **`ConfigureACEWithConstants.s.sol`** - Configure ACE (attach policies and extractors)
 
 ---
 
@@ -176,19 +180,22 @@ Foundry deployment scripts for ACE infrastructure:
 To run this demo, you'll need:
 
 **Tools:**
-- Git
-- [Foundry](https://book.getfoundry.sh/getting-started/installation) (`forge`, `cast`, `anvil`)
-- [Bun](https://bun.sh/) (JavaScript runtime and package manager)
-- [Chainlink Runtime Environment CLI](https://docs.chain.link/cre)
+
+* Git
+* [Foundry](https://book.getfoundry.sh/getting-started/installation) (`forge`, `cast`, `anvil`)
+* [Bun](https://bun.sh/) (JavaScript runtime and package manager)
+* [Chainlink Runtime Environment CLI](https://docs.chain.link/cre)
 
 **Testnet Funds:**
-- ETH on Sepolia testnet ([Chainlink Faucet](https://faucets.chain.link))
-- ETH on Fuji testnet
-- LINK tokens
+
+* ETH on Sepolia testnet ([Chainlink Faucet](https://faucets.chain.link))
+* ETH on Fuji testnet
+* LINK tokens
 
 **For Full Deployment:**
-- Private key with testnet ETH
-- RPC endpoints (free from [Alchemy](https://www.alchemy.com/) or public RPCs)
+
+* Private key with testnet ETH
+* RPC endpoints (free from [Alchemy](https://www.alchemy.com/) or public RPCs)
 
 ---
 
@@ -201,7 +208,7 @@ This repo includes pre-deployed Phase 3 contracts on Sepolia for immediate testi
 **Pre-Deployed Contracts:**
 
 | Contract | Sepolia Testnet | Fuji Testnet |
-|----------|-----------------|--------------|
+| -------- | --------------- | ------------ |
 | **StablecoinERC20** | [`0xF9ec...dE8e`](https://sepolia.etherscan.io/address/0xF9ec4EE99B992A6AA5C70619092E2c605480dE8e) | [`0x497C...aa71`](https://testnet.snowtrace.io/address/0x497C61Ed4e738410a25eD9b3a2F071D1606eaa71) |
 | **BurnMintTokenPool** | [`0x37Be...E2D6`](https://sepolia.etherscan.io/address/0x37BeD199bBDCfd86B01989bE271EC022430FE2D6) | [`0xf44f...03D6`](https://testnet.snowtrace.io/address/0xf44f0Ee3fE6563c37222CaFa08aBC00B078F03D6) |
 | **PolicyEngine** | [`0x697B...5CA1`](https://sepolia.etherscan.io/address/0x697B79dFdbe5eD6f9d877bBeFac04d7A28be5CA1) | - |
@@ -211,32 +218,36 @@ This repo includes pre-deployed Phase 3 contracts on Sepolia for immediate testi
 | **MintingConsumerWithACE** | [`0x24c0...F0Cc`](https://sepolia.etherscan.io/address/0x24c0f5C1A286Fbd27A730303a1a845b4cf85F0Cc) | - |
 | **CCIPTransferConsumerWithACE** | [`0xFa03...1cD5`](https://sepolia.etherscan.io/address/0xFa031de805af3a9A72D37f57a01634ADF4a61cD5) | - |
 
-
 **Test Phase 3 (PoR + ACE) Immediately:**
 
 **Step 1: Create configuration files**
+
 ```bash
 cp .env.example .env
 cp secrets.yaml.example secrets.yaml
 ```
 
 **Step 2: Set project root**
+
 ```bash
 export CRE_PROJECT_ROOT=$(pwd)
 ```
 
 **Step 3: Install workflow dependencies**
+
 ```bash
 cd bank-stablecoin-por-ace-ccip-workflow && bun install && cd ..
 ```
 
 **Step 4: Verify config**
+
 ```bash
 cat bank-stablecoin-por-ace-ccip-workflow/config.json
 # Should show pre-deployed contract addresses
 ```
 
 **Step 5a: Dry run test (no wallet/gas needed)**
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -248,18 +259,21 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 **Step 5b: Live test (mint to YOUR wallet)**
 
 First, edit the payload to use YOUR address:
+
 ```bash
 vim bank-stablecoin-por-ace-ccip-workflow/http_trigger_payload.json
 # Change beneficiary.account from "0x742d35..." to YOUR wallet address
 ```
 
 Then replace dummy key in .env with YOUR private key:
+
 ```bash
 vim .env
 # Change: CRE_ETH_PRIVATE_KEY=0xYOUR_PRIVATE_KEY_WITH_SEPOLIA_ETH
 ```
 
 Run with `--broadcast`:
+
 ```bash
 cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
   --target local-simulation \
@@ -270,6 +284,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 **What happens:**
+
 1. Workflow validates off-chain reserves (mock: $500,000 USD)
 2. Checks beneficiary is not blacklisted (ACE)
 3. Mints tokens to beneficiary on Sepolia (or shows dry run result)
@@ -297,6 +312,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 **Result:** Workflow logs show `✅ COMPLETE`, but NO tokens minted (ACE blocked internally). Verify:
+
 ```bash
 source .env
 cast call $STABLECOIN_SEPOLIA \
@@ -346,6 +362,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 Verify CCIP transfer succeeded:
+
 ```bash
 # Check for burn event (Transfer to zero address)
 cast receipt <mintTransaction_hash> --rpc-url $SEPOLIA_RPC --json | \
@@ -374,6 +391,7 @@ cre workflow simulate bank-stablecoin-por-ace-ccip-workflow \
 ```
 
 Verify blocking:
+
 ```bash
 # Check for burn event (Transfer to zero address)
 cast receipt <mintTransaction_hash> --rpc-url $SEPOLIA_RPC --json | \
@@ -399,14 +417,15 @@ Choose your learning path:
 
 Build the system step-by-step across 3 progressive phases. Each phase adds new capabilities:
 
-- [Phase 1: Basic Stablecoin](./bank-stablecoin-workflow/README.md) - Deploy stablecoin with mint/redeem (~20 min)
-- [Phase 2: Cross-Chain CCIP](./ccip-transfer-workflow/README.md) - Add cross-chain transfers (~30-60 min)
-- [Phase 3: PoR + ACE + CCIP](./bank-stablecoin-por-ace-ccip-workflow/README.md) - Production-ready setup (~45 min)
+* [Phase 1: Basic Stablecoin](./bank-stablecoin-workflow/README.md) - Deploy stablecoin with mint/redeem (~20 min)
+* [Phase 2: Cross-Chain CCIP](./ccip-transfer-workflow/README.md) - Add cross-chain transfers (~30-60 min)
+* [Phase 3: PoR + ACE + CCIP](./bank-stablecoin-por-ace-ccip-workflow/README.md) - Production-ready setup (~45 min)
 
 **Comprehensive Guide:**
 
 All phases in one document:
-- [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Complete step-by-step walkthrough
+
+* [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - Complete step-by-step walkthrough
 
 ---
 
@@ -415,23 +434,25 @@ All phases in one document:
 This demo showcases the complete Chainlink service stack working together:
 
 | Service | Usage in Demo | Benefit |
-|---------|---------------|---------|
+| ------- | ------------- | ------- |
 | **CRE (Runtime Environment)** | Orchestrates multi-service workflows | Off-chain computation with on-chain verification |
 | **PoR (Proof of Reserve)** | Validates off-chain reserves before minting | Prevents over-collateralization |
 | **ACE (Compliance Engine)** | Enforces address blacklist policies | Regulatory compliance (sanctions, AML) |
 | **CCIP (Cross-Chain Protocol)** | Secure token transfers between chains | Burn-and-mint cross-chain bridging |
 
 **CRE Capabilities Demonstrated:**
-- ✅ **HTTP Triggers** - Banking system integration via REST API
-- ✅ **Node Mode** - Fetch external data (PoR Mock Data) with DON consensus
-- ✅ **EVM Capabilities** - Write signed reports on-chain
-- ✅ **Multi-Service Orchestration** - Coordinate PoR → ACE → Mint → CCIP flows
+
+* ✅ **HTTP Triggers** - Banking system integration via REST API
+* ✅ **Node Mode** - Fetch external data (PoR Mock Data) with DON consensus
+* ✅ **EVM Capabilities** - Write signed reports on-chain
+* ✅ **Multi-Service Orchestration** - Coordinate PoR → ACE → Mint → CCIP flows
 
 **ACE Capabilities Demonstrated:**
-- ✅ **PolicyEngine** - Central policy registry and execution
-- ✅ **Custom Extractors** - Parse CRE's `onReport(bytes,bytes)` function
-- ✅ **Address Blacklist Policy** - Block mints/transfers to sanctioned addresses
-- ✅ **Upgradeable Proxies** - ERC-1967 pattern for all ACE components
+
+* ✅ **PolicyEngine** - Central policy registry and execution
+* ✅ **Custom Extractors** - Parse CRE's `onReport(bytes,bytes)` function
+* ✅ **Address Blacklist Policy** - Block mints/transfers to sanctioned addresses
+* ✅ **Upgradeable Proxies** - ERC-1967 pattern for all ACE components
 
 ---
 
@@ -441,7 +462,7 @@ This demo showcases the complete Chainlink service stack working together:
 
 Watch for these log messages when running the workflow:
 
-```
+```bash
 [USER LOG] STEP 1: Proof of Reserve Validation
 [USER LOG] ✓ PoR validation passed - reserves (500000 USD) can cover mint
 [USER LOG] STEP 2: Mint with ACE Policy Enforcement
@@ -455,6 +476,7 @@ Watch for these log messages when running the workflow:
 ### Verifying ACE Enforcement
 
 **Check if ACE blocked a transaction:**
+
 ```bash
 # Method 1: Check Transfer events (none = blocked)
 TRANSFER_SIG=$(cast sig-event "Transfer(address,address,uint256)")
@@ -484,9 +506,10 @@ cast call $BLACKLIST_POLICY "isBlacklisted(address)(bool)" <address> --rpc-url $
 ## Troubleshooting
 
 **Quick Tips:**
-- **Workflow won't compile?** → Run `cd <workflow> && bun install`
-- **ACE not blocking?** → See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#ace-not-blocking-blacklisted-addresses)
-- **CCIP not arriving?** → Wait 10-20 min, check [CCIP Explorer](https://ccip.chain.link)
+
+* **Workflow won't compile?** → Run `cd <workflow> && bun install`
+* **ACE not blocking?** → See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#ace-not-blocking-blacklisted-addresses)
+* **CCIP not arriving?** → Wait 10-20 min, check [CCIP Explorer](https://ccip.chain.link)
 
 **For detailed debugging:** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
@@ -510,4 +533,3 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ---
 
 **Built with ❤️ using Chainlink's complete service stack: CRE, PoR, ACE, and CCIP**
-

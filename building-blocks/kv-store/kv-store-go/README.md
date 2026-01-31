@@ -14,6 +14,7 @@
 A minimal example that, on a cron schedule, reads a value from an **AWS S3 object**, increments it, and writes it back—using **CRE (Chainlink Runtime Environment)** with SigV4-signed HTTP requests.
 
 The workflow:
+
 - Retrieves `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from CRE Secrets
 - Signs the request with AWS **SigV4** (timestamp sourced from the consensus runtime)
 - Reads the S3 object (initializes to `0` if missing)
@@ -27,11 +28,9 @@ The workflow:
 
 Add the following secrets to your CRE environment:
 
-```
-
+```bash
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
-
 ````
 
 (For local testing, ensure these are available to the simulator via your environment variables.)
@@ -49,10 +48,10 @@ Create/update `my-workflow/config.json` with your S3 details:
 }
 ````
 
-* `schedule` uses a **6-field** cron expression with seconds (e.g., `* * */1 * * *` runs every hour).
-* `aws_region` is the AWS region of your bucket.
-* `s3_bucket` is the bucket name.
-* `s3_key` is the object path that stores the counter.
+- `schedule` uses a **6-field** cron expression with seconds (e.g., `* * */1 * * *` runs every hour).
+- `aws_region` is the AWS region of your bucket.
+- `s3_bucket` is the bucket name.
+- `s3_key` is the object path that stores the counter.
 
 ### 3) Run a local simulation
 
@@ -64,7 +63,7 @@ cre workflow simulate my-workflow
 
 You should see output similar to:
 
-```
+```bash
 Workflow compiled
 2025-11-03T16:31:45Z [SIMULATION] Simulator Initialized
 

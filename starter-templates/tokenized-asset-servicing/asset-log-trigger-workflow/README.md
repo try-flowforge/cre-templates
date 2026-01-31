@@ -9,7 +9,7 @@ Steps to run the example
 You need to add a private key to the .env file. This is specifically required if you want to simulate chain writes. For that to work the key should be valid and funded.
 If your workflow does not perform any chain writes with the EVM Write capability, then you can just put any dummy key as a private key. e.g.
 
-```
+```bash
 CRE_ETH_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
 ```
 
@@ -26,7 +26,7 @@ local-simulation:
 
 ## 2. Install dependencies
 
-If `bun` is not already installed, see https://bun.com/docs/installation for installing in your environment.
+If `bun` is not already installed, see <https://bun.com/docs/installation> for installing in your environment.
 
 ```bash
 cd <workflow-name> && bun install

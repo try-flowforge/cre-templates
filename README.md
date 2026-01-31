@@ -31,12 +31,14 @@ Use these as references or starting points to compose your own production workfl
 ## Repository Structure
 
 ### Building Blocks
+
 Small, focused examples. Each directory includes its own README.
 
 - **`building-blocks/kv-store`** – Read/modify/write a value in **AWS S3** using SigV4-signed HTTP requests, CRE secrets, and a **consensus read → single write** flow.
 - **`building-blocks/read-data-feeds`** – Read `decimals()` and `latestAnswer()` from **Chainlink Data Feeds** on a schedule; includes ABI/bindings and RPC config examples.
 
 ### Starter Templates
+
 More complex, end-to-end workflows. Each directory includes its own README (some marked **WIP**).
 
 - **`starter-template/custom-data-feed`** – Fetch off-chain data (HTTP) and **push updates on-chain**; shows cron scheduling, secrets, bindings, and chain writes.
@@ -47,10 +49,10 @@ More complex, end-to-end workflows. Each directory includes its own README (some
 
 ## When to Use Which
 
-* **Building Blocks**
+- **Building Blocks**
   Use these when you want to learn a **single concept quickly** (e.g., secrets + HTTP signing, reading a data feed, cron triggers). Great for copy/paste into your project.
 
-* **Starter Templates**
+- **Starter Templates**
   Choose these when you want a **runnable reference architecture** that strings together multiple steps (off-chain + on-chain), includes contracts/bindings, and mirrors real workflows.
 
 ---

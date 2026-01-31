@@ -26,6 +26,7 @@ End-to-end **CRE (Chainlink Runtime Environment)** templates that demonstrate ri
 ## What are Starter Templates?
 
 Starter templates help you bootstrap real-world patterns:
+
 - Multiple capabilities in one workflow (scheduler, HTTP, EVM calls/writes, secrets).
 - Clear configuration via `config.json`.
 - Optional precompiled smart contracts and generated bindings.

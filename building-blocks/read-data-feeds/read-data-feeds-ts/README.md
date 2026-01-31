@@ -99,7 +99,7 @@ cre workflow simulate my-workflow
 
 You should see output similar to:
 
-```
+```bash
 Workflow compiled
 2025-10-30T09:24:27Z [SIMULATION] Simulator Initialized
 

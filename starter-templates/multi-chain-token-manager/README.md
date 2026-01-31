@@ -35,16 +35,18 @@ This tutorial represents an educational example to use a Chainlink system, produ
 This template provides an end-to-end staring point for writing your own multi-chain token manager that maximizes supply APY by rebalancing tokens cross-chain with the **Chainlink Runtime Environment (CRE)** via the **Cross-Chain Interoperability Protocol (CCIP)**.
 
 The template consists of two components:
-- [Contracts](./contracts/README.md) (deployed on multiple chains)
-  - [MockPool](./contracts/src/multi-chain-token-manager/MockPool.sol) contract that mimics an AAVE liquidity pool
-  - [ProtocolSmartWallet](./contracts/src/multi-chain-token-manager/ProtocolSmartWallet.sol) contract that manages lending positions
-- CRE Workflow that monitors supply APY of a target asset on each chain and automatically rebalances lending positions (to maximize supply APY)
-  - [Golang](./workflow-go/workflow/workflow.go) workflow targeting the **Golang CRE SDK**
-  - [Typescript](./workflow-ts/workflow/main.ts) workflow targeting the **Typescript CRE SDK**
+
+* [Contracts](./contracts/README.md) (deployed on multiple chains)
+  * [MockPool](./contracts/src/multi-chain-token-manager/MockPool.sol) contract that mimics an AAVE liquidity pool
+  * [ProtocolSmartWallet](./contracts/src/multi-chain-token-manager/ProtocolSmartWallet.sol) contract that manages lending positions
+* CRE Workflow that monitors supply APY of a target asset on each chain and automatically rebalances lending positions (to maximize supply APY)
+  * [Golang](./workflow-go/workflow/workflow.go) workflow targeting the **Golang CRE SDK**
+  * [Typescript](./workflow-ts/workflow/main.ts) workflow targeting the **Typescript CRE SDK**
 
 **Key Technologies:**
-- **CRE (Chainlink Runtime Environment)** - Orchestrates workflow with DON consensus
-- **CCIP (Cross-Chain Interoperability Protocol)** - Secure token bridging with instructions
+
+* **CRE (Chainlink Runtime Environment)** - Orchestrates workflow with DON consensus
+* **CCIP (Cross-Chain Interoperability Protocol)** - Secure token bridging with instructions
 
 <img width="1600" height="900" alt="mctm" src="https://github.com/user-attachments/assets/591441d3-a41f-4ee9-b354-f2d23cf1e329" />
 

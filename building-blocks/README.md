@@ -29,6 +29,7 @@ Small, focused examples showing how to use the **Chainlink Runtime Environment (
 Each block demonstrates a single CRE capability or pattern (e.g., reading on-chain data, writing to an off-chain service, using secrets, scheduling with cron). Use them as learning references or as starting points to compose your own workflows.
 
 **Common traits:**
+
 - Minimal code focused on one task
 - Clear configuration via `config.json`
 - Runnable locally with `cre workflow simulate`
@@ -39,6 +40,7 @@ Each block demonstrates a single CRE capability or pattern (e.g., reading on-cha
 ## Available Blocks
 
 ### 1) **Key-Value Store (AWS S3)**
+
 Path: [`./kv-store`](./kv-store)
 
 - Reads a value from an **AWS S3 object**, increments it, and writes it back.
@@ -50,6 +52,7 @@ Path: [`./kv-store`](./kv-store)
 ---
 
 ### 2) **Read Data Feeds**
+
 Path: [`./read-data-feeds`](./read-data-feeds)
 
 - On a cron schedule, reads `decimals()` and `latestAnswer()` from **Chainlink Data Feeds** (example targets BTC/USD and ETH/USD on Arbitrum One).
@@ -61,8 +64,8 @@ Path: [`./read-data-feeds`](./read-data-feeds)
 
 ## When to Use Which Block
 
-* **kv-store**: You want to see an **off-chain write** pattern (AWS S3), secrets usage, SigV4 signing, and a **consensus read → single write** flow.
-* **read-data-feeds**: You want to **read on-chain data** via contract calls, manage ABIs/bindings, and configure **RPC** access.
+- **kv-store**: You want to see an **off-chain write** pattern (AWS S3), secrets usage, SigV4 signing, and a **consensus read → single write** flow.
+- **read-data-feeds**: You want to **read on-chain data** via contract calls, manage ABIs/bindings, and configure **RPC** access.
 
 ---
 

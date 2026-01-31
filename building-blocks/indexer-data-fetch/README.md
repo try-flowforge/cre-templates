@@ -4,7 +4,7 @@ Workflows for pulling data from The Graph indexer with scheduled cron triggers. 
 
 ## Directory Structure
 
-```
+```bash
 building-blocks/indexer-fetch/
 ├── README.md (this file)
 ├── indexer-fetch-go/     (Go-based workflow)
@@ -26,12 +26,14 @@ building-blocks/indexer-fetch/
 ## Overview
 
 These workflows demonstrate how to:
+
 - Query The Graph indexer using GraphQL
 - Use cron triggers to schedule periodic data fetching
 - Process and return JSON-formatted indexer data
 - Implement the same functionality in both Go and TypeScript
 
 Both workflows query the Uniswap V4 subgraph on The Graph and fetch:
+
 - Pool manager statistics (pool count, transaction count, total volume)
 - ETH price data from bundles
 
@@ -42,11 +44,13 @@ Both workflows query the Uniswap V4 subgraph on The Graph and fetch:
 **Language:** Go
 
 **Features:**
+
 - Uses `http.SendRequest` pattern from CRE Go SDK
 - Implements `ConsensusIdenticalAggregation` for deterministic data
 - Returns formatted JSON with timestamp and endpoint info
 
 **Running the workflow:**
+
 ```bash
 cd building-blocks/indexer-fetch/indexer-fetch-go
 cre workflow simulate my-workflow --target staging-settings
@@ -57,11 +61,13 @@ cre workflow simulate my-workflow --target staging-settings
 **Language:** TypeScript
 
 **Features:**
+
 - Uses `runInNodeMode` pattern from CRE TypeScript SDK
 - Implements custom first-result aggregation for deterministic data
 - Returns formatted JSON with timestamp and endpoint info
 
 **Running the workflow:**
+
 ```bash
 cd building-blocks/indexer-fetch/indexer-fetch-ts
 cre workflow simulate workflow --target staging-settings
@@ -102,11 +108,13 @@ Both workflows use the same configuration structure in their respective `config.
 ### Prerequisites
 
 **For Go workflow:**
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Go
 
 **For TypeScript workflow:**
+
 1. Install CRE CLI
 2. Login: `cre login`
 3. Install Bun (or Node.js)
@@ -115,18 +123,20 @@ Both workflows use the same configuration structure in their respective `config.
 ### Running the Workflows
 
 **Go Workflow:**
+
 ```bash
 cd building-blocks/indexer-fetch/indexer-fetch-go
 cre workflow simulate workflow --target staging-settings
 ```
 
 **TypeScript Workflow:**
+
 ```bash
 cd building-blocks/indexer-fetch/indexer-fetch-ts
 cre workflow simulate workflow --target staging-settings
 ```
 
-### Example Output 
+### Example Output
 
 Both workflows return JSON output like:
 
@@ -153,11 +163,12 @@ Both workflows return JSON output like:
 }
 ```
 
-
 ## Example Use Cases
 
 ### 1. Monitoring Uniswap V4 Pools
+
 Query pool statistics every minute:
+
 ```json
 {
   "schedule": "0 * * * * *",
@@ -168,7 +179,9 @@ Query pool statistics every minute:
 ```
 
 ### 2. Tracking Token Prices
+
 Monitor token prices every 30 seconds:
+
 ```json
 {
   "schedule": "*/30 * * * * *",
@@ -179,7 +192,9 @@ Monitor token prices every 30 seconds:
 ```
 
 ### 3. DeFi Protocol Metrics
+
 Check protocol statistics every 5 minutes:
+
 ```json
 {
   "schedule": "0 */5 * * * *",

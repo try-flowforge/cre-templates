@@ -5,6 +5,7 @@ Add cross-chain token transfers using Chainlink CCIP.
 **Builds on:** [Phase 1](../bank-stablecoin-workflow/README.md) - Complete Phase 1 first
 
 **What you'll add:**
+
 - CCIP infrastructure (TokenPools, routes)
 - Cross-chain transfer consumers
 - Bidirectional transfers (Sepolia ↔ Fuji)
@@ -77,6 +78,7 @@ cast send $STABLECOIN_FUJI \
 ## Step 2.5: Deploy & Configure CCIP Infrastructure (All-in-One Script)
 
 **This single script does everything:**
+
 1. Deploys BurnMintTokenPool on Sepolia
 2. Deploys BurnMintTokenPool on Fuji
 3. Grants mint/burn roles on both chains
@@ -84,6 +86,7 @@ cast send $STABLECOIN_FUJI \
 5. Configures bidirectional routes (Sepolia ↔ Fuji)
 
 **Run the all-in-one script:**
+
 ```bash
 # Pass your deployed stablecoin addresses directly
 STABLECOIN_SEPOLIA=<YOUR_SEPOLIA_STABLECOIN> \
@@ -95,7 +98,8 @@ forge script script/DeployCCIP.s.sol:DeployCCIP \
 ```
 
 **Expected output:**
-```
+
+```bash
 ============================================================
 DEPLOYING CCIP INFRASTRUCTURE (SEPOLIA <> FUJI)
 ============================================================
@@ -134,12 +138,14 @@ Add to .env:
 ```
 
 Copy the pool addresses from output:
+
 ```bash
 export POOL_SEPOLIA=<sepolia_pool_from_output>
 export POOL_FUJI=<fuji_pool_from_output>
 ```
 
 **Verify routes:**
+
 ```bash
 # Check Sepolia pool knows about Fuji
 cast call $POOL_SEPOLIA "isSupportedChain(uint64)(bool)" 14767482510784806043 --rpc-url $SEPOLIA_RPC
@@ -153,18 +159,21 @@ cast call $POOL_FUJI "isSupportedChain(uint64)(bool)" 16015286601757825753 --rpc
 ## Step 2.6: Deploy CCIPTransferConsumer
 
 **Set LINK token addresses:**
+
 ```bash
 export LINK_SEPOLIA=0x779877A7B0D9E8603169DdbD7836e478b4624789
 export LINK_FUJI=0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
 ```
 
 **Set CCIP Router addresses:**
+
 ```bash
 export SEPOLIA_ROUTER=0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59
 export FUJI_ROUTER=0xF694E193200268f9a4868e4Aa017A0118C9a8177
 ```
 
 **Constructor arguments explained:**
+
 - `$STABLECOIN` = Your stablecoin address
 - `$ROUTER` = CCIP Router address
 - `$LINK` = LINK token address (for fees)
@@ -172,6 +181,7 @@ export FUJI_ROUTER=0xF694E193200268f9a4868e4Aa017A0118C9a8177
 - `0x6475...` = Expected workflow name (bytes10("dummy") for testing)
 
 **Deploy on Sepolia:**
+
 ```bash
 forge create contracts/CCIPTransferConsumer.sol:CCIPTransferConsumer \
   --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast \
@@ -183,6 +193,7 @@ export CCIP_CONSUMER_SEPOLIA=<paste_deployed_address_here>
 ```
 
 **Deploy on Fuji:**
+
 ```bash
 forge create contracts/CCIPTransferConsumer.sol:CCIPTransferConsumer \
   --rpc-url $FUJI_RPC --private-key $PRIVATE_KEY --broadcast \
@@ -196,6 +207,7 @@ export CCIP_CONSUMER_FUJI=<paste_deployed_address_here>
 ## Step 2.7: Fund Consumers with LINK
 
 **Sepolia:**
+
 ```bash
 cast send $LINK_SEPOLIA \
   "transfer(address,uint256)" \
@@ -206,6 +218,7 @@ cast send $LINK_SEPOLIA \
 ```
 
 **Fuji:**
+
 ```bash
 cast send $LINK_FUJI \
   "transfer(address,uint256)" \
@@ -218,6 +231,7 @@ cast send $LINK_FUJI \
 ## Step 2.8: Update CCIP Workflow Configuration
 
 Edit `ccip-transfer-workflow/config.json`:
+
 ```json
 {
   "chains": {
@@ -243,6 +257,7 @@ Edit `ccip-transfer-workflow/config.json`:
 The CCIPTransferConsumer needs permission to spend your tokens before initiating cross-chain transfers. Without this approval, transfers will fail silently.
 
 **On Sepolia:**
+
 ```bash
 cast send $STABLECOIN_SEPOLIA \
   "approve(address,uint256)" \
@@ -255,6 +270,7 @@ cast send $STABLECOIN_SEPOLIA \
 **Expected output:** Transaction hash with `status: 1 (success)`
 
 **On Fuji:**
+
 ```bash
 cast send $STABLECOIN_FUJI \
   "approve(address,uint256)" \
@@ -267,6 +283,7 @@ cast send $STABLECOIN_FUJI \
 **Why this matters:** The consumer calls `transferFrom(sender, consumer, amount)` which requires prior approval from the sender.
 
 **Important:** The `sender.account` in your payload file must have:
+
 - Sufficient token balance
 - Approval granted to the consumer (Step 2.9)
 - Match the private key you're using
@@ -277,10 +294,12 @@ In this demo, the deployer wallet (your private key) is both minting recipient a
 
 **Prerequisites Check:**
 Before testing the transfer, ensure your sender account has tokens. If you used the beneficiary address in Phase 1, you can either:
+
 - Option A: Use the beneficiary address (has 750 creUSD from Phase 1)
 - Option B: Mint tokens to your deployer address (recommended for testing)
 
 **If using deployer as sender (recommended):**
+
 ```bash
 # Edit the deployer payload with your address
 vim bank-stablecoin-workflow/http_trigger_payload_deployer.json
@@ -298,6 +317,7 @@ cre workflow simulate bank-stablecoin-workflow \
 ```
 
 **Install dependencies:**
+
 ```bash
 cd ccip-transfer-workflow
 bun install
@@ -305,6 +325,7 @@ cd ..
 ```
 
 **Transfer Sepolia to Fuji:**
+
 ```bash
 cre workflow simulate ccip-transfer-workflow \
   --target local-simulation \
@@ -315,11 +336,13 @@ cre workflow simulate ccip-transfer-workflow \
 ```
 
 **Monitor transfer:**
+
 - Copy messageId from logs
 - Visit: `https://ccip.chain.link/msg/<messageId>`
 - Wait 10-20 minutes for delivery
 
 **Verify on Fuji:**
+
 ```bash
 # After 10-20 minutes, check beneficiary's balance
 # (Use the beneficiary address from your http_trigger_payload.json)
@@ -340,4 +363,3 @@ Should show 100 creUSD received on the beneficiary address.
 **Next:** [Phase 3: Add PoR + ACE](../bank-stablecoin-por-ace-ccip-workflow/README.md)
 
 **See also:** [Complete Deployment Guide](../DEPLOYMENT_GUIDE.md) | [Main README](../README.md)
-

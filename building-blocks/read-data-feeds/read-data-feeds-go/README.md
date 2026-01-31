@@ -15,7 +15,7 @@
 
 Copy the feed’s ABI into your repo at:
 
-```
+```bash
 contract/abi/PriceFeedAggregator.abi
 ```
 
@@ -29,7 +29,7 @@ cre generate-bindings evm
 
 This creates Go bindings under something like:
 
-```
+```bash
 contracts/evm/src/generated/price_feed_aggregator/...
 ```
 
@@ -84,7 +84,7 @@ cre workflow simulate my-workflow
 
 You should see output similar to:
 
-```
+```bash
 Workflow compiled
 2025-10-30T09:24:27Z [SIMULATION] Simulator Initialized
 

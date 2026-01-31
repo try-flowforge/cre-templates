@@ -22,14 +22,16 @@ Install [Foundry](https://getfoundry.sh/introduction/installation/).
 ### Fund Deployer Wallet
 
 First your deployer wallet needs:
+
 - Native gas tokens (e.g., SepoliaETH) to deploy the contracts
 - LINK tokens that will be transferred to the ProtocolSmartWallet to pay CCIP fees for cross-chain token transfers
 - CCIP BnM tokens (testnet only)
   - Another CCIP Cross-Chain Token (CCT) can be used. Simply update the BNM token addresses in the [deploy script](./scripts/multi-chain-token-manager/DeployTokenManagerContracts.s.sol) and [workflow config](../workflow/workflow/config.json) to the target CCT.
 
 Faucets:
-- Native gas tokens and LINK tokens https://faucets.chain.link
-- CCIP BnM tokens https://docs.chain.link/ccip/test-tokens
+
+- Native gas tokens and LINK tokens <https://faucets.chain.link>
+- CCIP BnM tokens <https://docs.chain.link/ccip/test-tokens>
 
 ### Configure RPC URLs
 
@@ -40,13 +42,14 @@ Populate the RPC URLs for sepolia and base-sepolia in [foundry.toml](./foundry.t
 Deploy multi-chain token manager contracts. Needs to be run once per chain you are targeting.
 
 This script will:
+
 - Deploy the ProtocolSmartWallet (PSW) and MockPool contracts
 - Transfer 1 LINK to the PSW contract for CCIP fees
 - Transfer 1 CCIP BnM to the PSW contract that is then deposited into to the MockPool contract
 - Configure ProtocolSmartWallet contracts for CCIP
   - This step sets up each ProtocolSmartWallet with the addresses of its counterparts on other chains, enabling it to verify that any incoming CCIP message comes from a legitimate ProtocolSmartWallet on another chain.
 
-```
+```bash
 ENABLE_WORKFLOW_SIMULATION=true \
 forge script ./scripts/multi-chain-token-manager/DeployTokenManagerContracts.s.sol \
 --private-key <EOA funded on target chain> \
@@ -65,7 +68,8 @@ to test the workflow rebalancing tokens to the chain with the highest APY.
 First, update the hardcoded APY in [SetPoolAPY.s.sol](./scripts/multi-chain-token-manager/SetPoolAPY.s.sol).
 
 Finally, configure the APY on-chain.
-```
+
+```bash
 ENABLE_WORKFLOW_SIMULATION=true \
 forge script ./scripts/multi-chain-token-manager/SetPoolAPY.s.sol \
 --rpc-url "<RPC URL for target chain>" \

@@ -23,13 +23,13 @@ Populate the RPC URLs for sepolia and base-sepolia in [foundry.toml](./foundry.t
 
 ### Fund Deployer Wallet
 
-First your deployer wallet needs native gas tokens (e.g., SepoliaETH) to deploy the contracts, which can be obtained from the Chainlink testnet faucet https://faucets.chain.link.
+First your deployer wallet needs native gas tokens (e.g., SepoliaETH) to deploy the contracts, which can be obtained from the Chainlink testnet faucet <https://faucets.chain.link>.
 
 ## Proof-of-Reserve (PoR)
 
 Deploys the DataFeedsCache and BundleAggregatorProxy contracts for use with the PoR workflow.
 
-```
+```bash
 ENABLE_WORKFLOW_SIMULATION=true \
 forge script ./scripts/por/DeployPoRContracts.s.sol \
 --rpc-url <sepolia|base-sepolia> \
@@ -43,7 +43,7 @@ Update the PoR workflow config with the newly deployed contract addresses as per
 
 Deploys the DataFeedsCache and DecimalAggregatorProxy contracts for use with the NAV workflow.
 
-```
+```bash
 ENABLE_WORKFLOW_SIMULATION=true \
 forge script ./scripts/por/DeployPoRContracts.s.sol \
 --rpc-url <sepolia|base-sepolia> \
