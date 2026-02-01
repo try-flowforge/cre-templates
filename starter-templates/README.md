@@ -48,7 +48,7 @@ They are more comprehensive than **building-blocks**, and can be adapted into yo
    Orchestrate token operations and state across multiple chains, showing RPC configuration, bindings, and cross-chain patterns.
 
 4. **Uniswap Swap** — [`./uniswap-swap`](./uniswap-swap)  
-   Config-driven Uniswap V3 token swap via CRE report + SwapReceiver contract. Config shape aligned with agentic SwapNodeConfig for app invocation.
+   Config-driven Uniswap V4 token swap via CRE report + SwapReceiver contract. Config shape aligned with agentic SwapNodeConfig for app invocation.
 
 5. **Aave Lending** — [`./aave-lending`](./aave-lending)  
    Config-driven Aave V3 Pool operations (supply, withdraw, borrow, repay) via CRE report + AaveReceiver contract. Config shape aligned with agentic LendingNodeConfig for app invocation.

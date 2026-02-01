@@ -1,13 +1,13 @@
 # Uniswap Swap - CRE Starter Template
 
-Config-driven CRE workflow that performs a **Uniswap V3 token swap** on a single chain. Config shape is aligned for FlowForge workflows that can be invoked from the app with the same config.
+Config-driven CRE workflow that performs a **Uniswap V4 token swap** on a single chain. Config shape is aligned for FlowForge workflows that can be invoked from the app with the same config.
 
 ---
 
 ## What This Template Does
 
 - **Trigger:** Cron (scheduled) or HTTP (one-off invocation from an app).
-- **Execution:** CRE report + **SwapReceiver** contract. The workflow encodes swap params (tokenIn, tokenOut, amountIn, amountOutMinimum, recipient, deadline, router) and submits a report; the **SwapReceiver** contract decodes the report, pulls tokens from the recipient, and calls Uniswap V3 SwapRouter02 `exactInputSingle`.
+- **Execution:** CRE report + **SwapReceiver** contract. The workflow encodes swap params and submits a report; the **SwapReceiver** pulls tokens from the recipient, approves PoolManager, and calls [Uniswap V4 PoolSwapTest](https://github.com/Uniswap/v4-core/blob/main/src/test/PoolSwapTest.sol) for the swap.
 - **Result:** Returns `{ success, txHash?, amountIn, amountOut?, error? }` so the backend can map to `NodeExecutionOutput` / `SwapExecutionResult`.
 
 ---
@@ -18,9 +18,13 @@ Config-driven CRE workflow that performs a **Uniswap V3 token swap** on a single
 - `chainSelectorName`: CRE chain selector (e.g. `ethereum-mainnet-arbitrum-1`, `ethereum-testnet-sepolia-arbitrum-1`)
 - `provider`: `"UNISWAP"`
 - `swapReceiverAddress`: Deployed **SwapReceiver** contract address (required).
-- `routerAddress`: Uniswap V3 SwapRouter02 address for the chain.
-- `quoterAddress`: (optional) QuoterV2 for quotes; workflow can use `amountOutMinimum` from config instead.
+- `poolSwapTestAddress`: Uniswap V4 PoolSwapTest address for the chain (testnets only; mainnets may use a different router).
+- `poolManagerAddress`: Uniswap V4 PoolManager address for the chain.
 - `gasLimit`: Gas limit for the writeReport tx.
+- `poolConfig`: V4 pool identification (optional; defaults: fee 3000, tickSpacing 60, no hooks).
+  - `fee`: uint24 (e.g. 3000 = 0.3%)
+  - `tickSpacing`: int24 (e.g. 60 for 0.3% fee tier)
+  - `hooks`: address (IHooks; use `0x0000000000000000000000000000000000000000` for pools without hooks)
 - `inputConfig`:
   - `sourceToken`: `{ address, symbol?, decimals? }`
   - `destinationToken`: `{ address, symbol?, decimals? }`
@@ -34,13 +38,32 @@ Config-driven CRE workflow that performs a **Uniswap V3 token swap** on a single
 - `schedule`: 6-field cron (for cron trigger).
 - `simulateFirst?`: boolean (optional).
 
+**Currency ordering and zeroForOne:** V4 pools use `currency0` and `currency1` sorted by address (currency0 < currency1). The workflow derives `zeroForOne` from your source/destination: `zeroForOne = true` means swapping currency0 → currency1; `false` means currency1 → currency0.
+
+---
+
+## V4 Fee Structure
+
+Uniswap V4 applies **protocol fee** first, then **LP fee** to the remainder. The total swap fee is slightly less than the simple sum of both. V4 supports unlimited static fee tiers and dynamic fees (indicated by fee = `0x800000`). See [Uniswap V4 fee docs](https://docs.uniswap.org/contracts/v4/concepts/fee%20structure).
+
+---
+
+## V4 Contract Addresses (Arbitrum Sepolia)
+
+| Contract | Address |
+| -------- | ------- |
+| PoolManager | `0xFB3e0C6F74eB1a21CC1Da29aeC80D2Dfe6C9a317` |
+| PoolSwapTest | `0xf3a39c86dbd13c45365e57fb90fe413371f65af8` |
+
+See [Uniswap V4 Deployments](https://docs.uniswap.org/contracts/v4/deployments) for other chains.
+
 ---
 
 ## Setup
 
 ### 1. Deploy SwapReceiver to Arbitrum Sepolia
 
-Deploy the **SwapReceiver** contract so the CRE workflow has an on-chain receiver to send reports to. Users must **approve** this contract for `tokenIn` before the workflow runs.
+Deploy the **SwapReceiver** contract so the CRE workflow has an on-chain receiver to send reports to. Users must **approve** this contract for `tokenIn` (source currency) before the workflow runs.
 
 **Prerequisites**
 
@@ -55,13 +78,10 @@ Deploy the **SwapReceiver** contract so the CRE workflow has an on-chain receive
    cd cre-templates/starter-templates/uniswap-swap/contracts
    ```
 
-2. **Install Forge standard library** (if not already present)
-
-   Either clone it (avoids git submodule issues):
+2. **Initialize submodules** (uniswap-hooks, hookmate, forge-std)
 
    ```bash
-   mkdir -p lib
-   git clone https://github.com/foundry-rs/forge-std lib/forge-std
+   git submodule update --init --recursive
    ```
 
 3. **Set your deployer private key** (wallet that will pay gas)
@@ -80,7 +100,9 @@ Deploy the **SwapReceiver** contract so the CRE workflow has an on-chain receive
      --verify --verifier-api-key $ETHERSCAN_API_KEY
    ```
 
-5. **Copy the deployed address** from the log (`SwapReceiver deployed at: 0x...`) and set it in the workflow config (see step 2 below).
+5. **Copy the deployed address** from the log (`SwapReceiver deployed at: 0x...`) and set it in the workflow config.
+
+See [UNISWAP_SWAP_WORKFLOW_RUN_STEPS.md](../../../docs/UNISWAP_SWAP_WORKFLOW_RUN_STEPS.md) for full run steps (deploy, config, approvals, test).
 
 ### 2. Run a swap (Arbitrum Sepolia)
 
@@ -102,76 +124,63 @@ Allow the deployed SwapReceiver to pull WETH from your wallet:
 
 ```bash
 cast send 0x980B62Da83eFf3D4576C647993b0c1D7faf17c73 \
-  "approve(address,uint256)" 0x9A48d70a5DD7DcE58A297bb0acFfEB14D7C77085 115792089237316195423570985008687907853269984665640564039457584007913129639935 \
+  "approve(address,uint256)" <SWAP_RECEIVER_ADDRESS> 115792089237316195423570985008687907853269984665640564039457584007913129639935 \
   --rpc-url https://sepolia-rollup.arbitrum.io/rpc --private-key $PRIVATE_KEY
 ```
 
 (Or approve a specific amount, e.g. `100000000000000000` for 0.1 WETH.)
 
-**Step C – Set your wallet in the workflow config**
+**Step C – Set your wallet and SwapReceiver in the workflow config**
 
-Edit `uniswap-swap-ts/workflow/config.staging.json` and set `inputConfig.walletAddress` to the **same** wallet you used in Step A and B (the one that holds WETH and approved SwapReceiver). The config already has:
+Edit `uniswap-swap-ts/workflow/config.staging.json`:
 
-- `swapReceiverAddress`: `0x9A48d70a5DD7DcE58A297bb0acFfEB14D7C77085`
-- Example: WETH → USDC, amount `100000000000000000` (0.1 WETH), `amountOutMinimum`: `"0"` (use a real quote in production).
+- Set `swapReceiverAddress` to your deployed SwapReceiver address.
+- Set `inputConfig.walletAddress` to the **same** wallet you used in Step A and B (the one that holds WETH and approved SwapReceiver).
+- Ensure `poolConfig` matches the V4 pool you want to swap on (fee, tickSpacing, hooks). For pools without hooks, use `hooks: "0x0000000000000000000000000000000000000000"`.
 
 **Step D – Run the workflow**
 
-From repo root:
+From the workflow directory:
 
 ```bash
-cd cre-templates/starter-templates/uniswap-swap/uniswap-swap-ts/workflow
+cd uniswap-swap-ts
 bun install   # or npm install
 cre workflow simulate workflow --target staging-settings --trigger-index 1 --non-interactive --http-payload '{}'
 ```
 
-`--trigger-index 1` uses the HTTP trigger (one-off). For a scheduled run you’d use the cron trigger (index 0).
+`--trigger-index 1` uses the HTTP trigger (one-off). For a scheduled run you'd use the cron trigger (index 0).
 
 **Note:** `cre workflow simulate` runs in simulation mode. To actually submit the report on-chain you need a CRE environment that broadcasts (e.g. registered workflow and DON). Check [CRE docs](https://docs.chain.link/cre) for running in a live environment.
 
 ### 3. Configure workflow (reference)
 
-- Set `swapReceiverAddress` in `workflow/config.staging.json` to your deployed SwapReceiver address (already set above).
+- Set `swapReceiverAddress` in `workflow/config.staging.json` to your deployed SwapReceiver address.
 - Set `inputConfig.sourceToken`, `destinationToken`, `amount`, `walletAddress`, and optionally `amountOutMinimum` (recommended for EXACT_INPUT).
+- Set `poolConfig` to match the target V4 pool (fee, tickSpacing, hooks).
 
 ### 4. RPC and secrets
 
 - Configure RPC endpoints in `project.yaml` (or use defaults).
 - For local simulation, no private key is required (report/receiver flow uses DON consensus).
 
-### 5. Install and run
-
-From the **project root** (where `project.yaml` is):
-
-```bash
-cd uniswap-swap-ts/workflow
-bun install   # or npm install
-cre workflow simulate workflow --target staging-settings
-```
-
-For HTTP trigger (one-off):
-
-```bash
-cre workflow simulate workflow --target staging-settings --trigger-index 1 --non-interactive --http-payload '{}'
-```
-
 ---
 
 ## Troubleshooting
 
-If you run with `--broadcast` and the transaction reverts when you inspect it on Arbiscan:
-
 - **`ERC20: transfer amount exceeds balance`**  
   The wallet in `inputConfig.walletAddress` does not hold enough of the **source token** (e.g. WETH). Fix: fund that wallet with the source token (wrap ETH to WETH if using WETH), then run again. Ensure the balance is at least `inputConfig.amount` (in wei/smallest unit).
 
-- **`ERC20: insufficient allowance`** (if you see this instead)  
+- **`ERC20: insufficient allowance`**  
   The wallet has not approved the SwapReceiver contract to spend the source token. Fix: run Step B (approve) for the wallet that is set in `walletAddress`.
 
 - **Simulation says "Swap tx succeeded" but the chain tx reverted**  
   The CRE CLI may return a tx hash when the report was submitted; the actual revert happens inside the receiver contract (e.g. balance/allowance). Always check the tx on Arbiscan. Ensure the recipient wallet is funded and approved before broadcasting.
 
-- **`STF` or "out of gas: not enough gas for reentrancy sentry"**  
-  The tx ran out of gas during the swap (often when the router pulls the input token from the receiver into the pool). No address is "low on gas" — the **gas limit** for the writeReport tx was too low. Fix: increase `gasLimit` in the workflow config (e.g. to 500000–600000 for a single-hop swap).
+- **Pool not found or swap reverts**  
+  Ensure `poolConfig` (fee, tickSpacing, hooks) matches an existing V4 pool for the source/destination token pair. The pool must be initialized on the target chain. For Arbitrum Sepolia, see [Create USDC/WETH Pool](../../../docs/CREATE_USDC_WETH_POOL_ARB_SEPOLIA.md) to create the pool and add liquidity.
+
+- **`STF` or "out of gas"**  
+  The tx ran out of gas during the swap. Fix: increase `gasLimit` in the workflow config (e.g. to 550000–600000 for a single-hop swap).
 
 ---
 
@@ -179,8 +188,9 @@ If you run with `--broadcast` and the transaction reverts when you inspect it on
 
 - `uniswap-swap-ts/`: TypeScript workflow
   - `workflow/`: main.ts, workflow.yaml, config.staging.json, config.production.json, package.json
-  - `contracts/abi/`: IERC20, QuoterV2 (for optional quote)
-- `contracts/src/`: SwapReceiver.sol and keystone interfaces (IReceiver, IERC165)
+  - `contracts/abi/`: IERC20
+- `contracts/`: SwapReceiver.sol and keystone interfaces (IReceiver, IERC165)
+  - `lib/`: uniswap-hooks (v4-core, v4-periphery), hookmate, forge-std
 
 ---
 

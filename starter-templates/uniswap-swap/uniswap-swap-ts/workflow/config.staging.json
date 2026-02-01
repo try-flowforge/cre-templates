@@ -3,10 +3,16 @@
   "chain": "ARBITRUM_SEPOLIA",
   "chainSelectorName": "ethereum-testnet-sepolia-arbitrum-1",
   "provider": "UNISWAP",
-  "swapReceiverAddress": "0x9A48d70a5DD7DcE58A297bb0acFfEB14D7C77085",
-  "routerAddress": "0x101F443B4d1b059569D643917553c771E1b9663E",
-  "quoterAddress": "0x2779a0CC1c3e0E44D2542EC3e79e3864Ae93Ef0B",
+  "swapReceiverAddress": "0x70a0610104FeE6a3E2D46bBA24554B283443f985",
+  "poolSwapTestAddress": "0xf3a39c86dbd13c45365e57fb90fe413371f65af8",
+  "poolManagerAddress": "0xFB3e0C6F74eB1a21CC1Da29aeC80D2Dfe6C9a317",
+  "stateViewAddress": "0x9d467fa9062b6e9b1a46e26007ad82db116c67cb",
   "gasLimit": "550000",
+  "poolConfig": {
+    "fee": 500,
+    "tickSpacing": 10,
+    "hooks": "0x0000000000000000000000000000000000000000"
+  },
   "inputConfig": {
     "sourceToken": {
       "address": "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",

@@ -1,0 +1,17 @@
+{
+  "name": "uniswap-v4-create-pool-script",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "create-pool": "bun run create-usdc-weth-pool.ts",
+    "create-pool:help": "bun run create-usdc-weth-pool.ts -- --help"
+  },
+  "dependencies": {
+    "@uniswap/v3-sdk": "^3.27.0",
+    "viem": "^2.34.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0"
+  }
+}

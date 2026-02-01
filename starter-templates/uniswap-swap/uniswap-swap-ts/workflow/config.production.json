@@ -4,9 +4,14 @@
   "chainSelectorName": "ethereum-mainnet-arbitrum-1",
   "provider": "UNISWAP",
   "swapReceiverAddress": "",
-  "routerAddress": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
-  "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
-  "gasLimit": "300000",
+  "poolSwapTestAddress": "",
+  "poolManagerAddress": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+  "gasLimit": "550000",
+  "poolConfig": {
+    "fee": 3000,
+    "tickSpacing": 60,
+    "hooks": "0x0000000000000000000000000000000000000000"
+  },
   "inputConfig": {
     "sourceToken": {
       "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
