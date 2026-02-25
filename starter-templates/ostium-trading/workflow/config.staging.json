@@ -1,0 +1,12 @@
+{
+    "schedule": "0 */5 * * * *",
+    "network": "testnet",
+    "market": "ETH",
+    "side": "long",
+    "collateral": 100,
+    "leverage": 10,
+    "traderAddress": "0x3b2B9873D791369D7eC7Bc20b41177e6e986d292",
+    "serviceUrl": "https://ostium.ctxbt.com",
+    "slPrice": 1500,
+    "tpPrice": 2500
+}

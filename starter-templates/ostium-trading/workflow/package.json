@@ -1,0 +1,19 @@
+{
+    "name": "ostium-ts",
+    "version": "1.0.0",
+    "description": "Ostium Trading CRE Template",
+    "main": "main.js",
+    "private": true,
+    "scripts": {
+        "postinstall": "bunx cre-setup"
+    },
+    "dependencies": {
+        "@chainlink/cre-sdk": "^1.0.0",
+        "@noble/hashes": "^1.7.1",
+        "viem": "2.34.0",
+        "zod": "3.25.76"
+    },
+    "devDependencies": {
+        "@types/bun": "1.2.21"
+    }
+}
