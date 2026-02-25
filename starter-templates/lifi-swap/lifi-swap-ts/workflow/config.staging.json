@@ -1,0 +1,24 @@
+{
+    "schedule": "0 */5 * * * *",
+    "chain": "ARBITRUM",
+    "chainSelectorName": "arbitrum-1",
+    "provider": "LIFI",
+    "swapReceiverAddress": "0x8C980f148D37CA51105e7ef25Ba0D085EC859ae1",
+    "gasLimit": "1500000",
+    "inputConfig": {
+        "sourceToken": {
+            "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "symbol": "USDC",
+            "decimals": 6
+        },
+        "destinationToken": {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "amount": "1000000",
+        "swapType": "EXACT_INPUT",
+        "walletAddress": "0x26403cB6a031fF8F73c828497fdDC493C95554f6",
+        "slippageTolerance": 0.5
+    }
+}

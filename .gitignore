@@ -41,3 +41,6 @@ cache/
 node_modules/
 bun.lock
 tmp.js
+
+.*
+cre_docs.*
